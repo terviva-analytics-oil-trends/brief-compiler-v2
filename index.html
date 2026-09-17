@@ -272,10 +272,11 @@
   async function callBackend(action, payload){
     if (!webhookUrl) throw new Error('Not connected yet — click "Not connected" above to set it up.');
     var body = Object.assign({ action: action }, payload || {});
+    var form = new URLSearchParams();
+    form.set('payload', JSON.stringify(body));
     var res = await fetch(webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids a CORS preflight Apps Script can't handle
-      body: JSON.stringify(body),
+      body: form, // browser sets Content-Type: application/x-www-form-urlencoded automatically — most reliable for Apps Script web apps, especially with larger payloads
     });
     var data = await res.json();
     if (data && data.error) throw new Error(data.error);
