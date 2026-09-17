@@ -432,6 +432,7 @@
     try{
       var reports = ready.map(function(f){ return { name: f.name, text: f.text }; });
       var data = await callBackend('compile', { reports: reports });
+      if (!data || !data.brief){ throw new Error('The compiler returned an empty result. Try again, or with fewer reports at once.'); }
       currentBrief = data.brief;
       currentBriefId = null;
       renderBrief(currentBrief);
@@ -600,6 +601,7 @@
     if (btn){ btn.disabled = true; btn.innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,.2); border-top-color:var(--ink);"></span>Tightening…'; }
     try{
       var data = await callBackend('compress', { previousBrief: currentBrief });
+      if (!data || !data.brief){ throw new Error('The compiler returned an empty result. Try again.'); }
       currentBrief = data.brief;
       renderBrief(currentBrief);
       setUploadMsg('Tightened the brief. Check the length below.', 'info');
